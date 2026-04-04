@@ -60,26 +60,31 @@ class LinearRegression:
         # size of data
         m = X.shape[0]
 
-        difference = (self.w*X + self.b) - y
-        dw = (1/m)*np.sum(difference*X)
-        db = 1/m*np.sum(difference)
+        error = (self.w*X + self.b) - y
+        dw = (1/m)*np.sum(error*X)
+        db = 1/m*np.sum(error)
+
+        return dw, db
 
     def fit(self, X, y):
         """
-        Fitting data X wrt to given y their respestive outputs.
+        Fitting data X wrt to given y label outputs.
 
         Args:
             X (ndarray(m,)): data, m examples
             y (ndarray(m,)): target values
 
         Returns
-            dw (float): The gradient wrt to w. 
-            db: The gradient wrt to b.
+            None
         """
 
-
-
-
+        for i in range(self.epochs):
+            cost = self._cost_function(X, y)
+            print(f"Cost: {cost} and epochs: {i + 1}")
+            gradient_dw, gradient_db = self._compute_gradient(X, y)
+            self.w = self.w - self.alpha*(gradient_dw)
+            self.b = self.b - self.alpha*(gradient_db)
+            
     def predict(self, X):
         print("Calling the predict method")
 
