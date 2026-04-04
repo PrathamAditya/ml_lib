@@ -8,7 +8,11 @@ The user PROVIDES the data
 
 class LinearRegression:
 
-    def __init__ (self, learning_rate, epochs):
+    def __init__ ():
+        pass
+
+
+    def __init__ (self, epochs, learning_rate):
 
         # w should be vector for non-univariate Linear Regression
         self.w = 0
@@ -82,10 +86,14 @@ class LinearRegression:
             cost = self._cost_function(X, y)
             print(f"Cost: {cost} and epochs: {i + 1}")
             gradient_dw, gradient_db = self._compute_gradient(X, y)
+            if(i == 0):
+                print(gradient_dw, " ", gradient_db)
             self.w = self.w - self.alpha*(gradient_dw)
             self.b = self.b - self.alpha*(gradient_db)
+
+        print(f"W: {self.w}, b: {self.b}")
             
-    def predict(self, X):
-        print("Calling the predict method")
+    def predict(self, x):
+        return self.w*x+self.b
 
         
