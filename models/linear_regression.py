@@ -42,7 +42,6 @@ class LinearRegression:
         total_cost = sum_of_square_error/(2*m)
         return total_cost
     
-
     def _compute_gradient(self, X, y):
         """
         Computes the gradient for linear regression.
@@ -95,8 +94,18 @@ class LinearRegression:
             self.b = self.b - self.alpha*(gradient_db)
 
         print(f"W: {self.w}, b: {self.b}")
-            
+
+
+    def score(self, X, y):
+        y_hat = self.predict(X)
+        mean_y = np.mean(y)
+        SS_res = np.sum((y - y_hat) ** 2)
+        SS_tot = np.sum((y - mean_y) ** 2)
+        return (1 - (SS_res/SS_tot))
+
     def predict(self, X):
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
         return np.dot(X, self.w) + self.b
 
         
