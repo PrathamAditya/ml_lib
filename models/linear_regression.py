@@ -11,7 +11,6 @@ class LinearRegression:
     def __init__ ():
         pass
 
-
     def __init__ (self, epochs, learning_rate):
 
         # w should be vector for non-univariate Linear Regression
@@ -35,17 +34,12 @@ class LinearRegression:
             to fit the data points in X and y.
 
         """
+        # length of input vector
         m = X.shape[0]
-
-        cost_sum = 0
-
-        # later I need to implement vectorization here.
-        for i in range(m):
-            f_wb = self.w * X[i] + self.b
-            cost = (f_wb - y[i]) ** 2
-            cost_sum += cost
-
-        total_cost = 1/(2*m)* cost_sum
+        y_hat = np.dot(X, self.w) + self.b
+        error = y_hat - y
+        sum_of_square_error = np.sum(error ** 2)
+        total_cost = sum_of_square_error/(2*m)
         return total_cost
     
 
@@ -64,9 +58,10 @@ class LinearRegression:
         # size of data
         m = X.shape[0]
 
-        error = (self.w*X + self.b) - y
-        dw = (1/m)*np.sum(error*X)
-        db = 1/m*np.sum(error)
+        y_hat = np.dot(X, self.w) + self.b
+        error =  y_hat - y
+        dw = (1/m) * np.sum(X.T * error)
+        db = (1/m) * np.sum(error)
 
         return dw, db
 
@@ -82,6 +77,14 @@ class LinearRegression:
             None
         """
 
+        # reshaping
+        if (X.ndim == 1):
+            X = X.reshape(-1, 1)
+
+        # initialization of weights
+        self.w = np.zeros(X.shape[1])
+        self.b = 0
+
         for i in range(self.epochs):
             cost = self._cost_function(X, y)
             print(f"Cost: {cost} and epochs: {i + 1}")
@@ -93,7 +96,7 @@ class LinearRegression:
 
         print(f"W: {self.w}, b: {self.b}")
             
-    def predict(self, x):
-        return self.w*x+self.b
+    def predict(self, X):
+        return np.dot(X, self.w) + self.b
 
         

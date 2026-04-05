@@ -1,7 +1,8 @@
 from models.linear_regression import LinearRegression
 import numpy as np
 
-def Test():
+
+def UnivariateTest():
     
     X = np.array([1,2,3,4,5,6,7,8,9,10])
     m = X.shape[0]
@@ -20,6 +21,46 @@ def Test():
     #print(mean, std , scaled_test_input)
     print(f"Prediction for x: {x.predict(scaled_test_input)*std_y + mean_y}")
 
-Test()
+
+def MultivariateTest():
+    X = np.array([
+    [1, 7],
+    [2, 3],
+    [3, 8],
+    [4, 2],
+    [5, 9],
+    [6, 1],
+    [7, 5],
+    [8, 4],
+    [9, 6],
+    [10, 0]
+])
+    y = 2 * X[:, 0] + 3 * X[:, 1] + 5
+    m = X.shape[0]
+    mean_X = np.mean(X, axis=0)
+    std_X = np.sqrt(np.mean((X - mean_X)**2, axis=0))
+    X = (X - mean_X) / std_X
+    mean_y = np.mean(y)
+    std_y = np.sqrt(np.mean((y - mean_y)**2))
+    y = (y - mean_y) / std_y
+
+    # Train
+    model = LinearRegression(epochs=10000, learning_rate=0.001)
+    model.fit(X, y)
+
+    # Test input
+    test_input = np.array([10, 10])
+
+    # Scale input (IMPORTANT: use same mean/std)
+    test_scaled = (test_input - mean_X) / std_X
+
+    # Predict (then inverse scale)
+    pred_scaled = model.predict(test_scaled)
+    pred = pred_scaled * std_y + mean_y
+
+    print(f"Prediction for [10,10]: {pred}")
+
+MultivariateTest()
+
 
 
