@@ -61,12 +61,59 @@ class LogisticRegression:
 
         """
         # number of traning data
-        m = X.Shape[0]
+        m = X.shape[0]
         z = np.dot(X, self.w) + self.b
         y_hat = self._sigmoid(z)
+        y_hat = np.clip(y_hat, 1e-15, 1 - 1e-15)
         loss = -y*np.log(y_hat) - (1 - y)*np.log(1 - y_hat)
         sum_loss = np.sum(loss)
-        total_cost = sum_loss/(2*m)
+        total_cost = sum_loss / m
         return total_cost
+    
+    def _compute_gradient(self, X, y):
+        """
+        Computes the gradient for linear regression.
+        Args:
+            X (ndarray(m,)): data, m examples
+            y (ndarray(m,)): target values
+
+        Returns
+            dw (float): The gradient wrt to w. 
+            db: The gradient wrt to b.
+        """
+        # size of data
+        m = X.shape[0]
+
+        z = np.dot(X, self.w) + self.b
+        y_hat = self._sigmoid(z)
+        error =  y_hat - y
+        dw = (1/m) * np.sum(X.T, error)
+        db = (1/m) * np.sum(error)
+
+        return dw, db
+    
+    def accuracy(self, X, y):
+        y_pred = self.predict(X)
+        accuracy = np.sum(y_pred == y) / len(y)
+        return accuracy
+    
+    def predict(self, X):
+        is_single_input = 0
+        if X.ndim == 1:
+            is_single_input = 1
+            X = X.reshape(1, -1)
+        # else:
+        #     X = X.reshape(1, -1)
+        
+        z = np.dot(X, self.w) + self.b
+        y_hat = self._sigmoid(z)
+
+        predictions = y_hat >= 0.5
+
+        if is_single_input:
+            return predictions[0]
+        else: 
+            return predictions
+
     
 
