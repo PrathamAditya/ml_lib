@@ -11,15 +11,16 @@ class LinearRegression:
     def __init__ ():
         pass
 
-    def __init__ (self, epochs, learning_rate):
+    def __init__ (self, epochs, learning_rate, lambda_ = 0):
 
         # w should be vector for non-univariate Linear Regression
-        self.w = 0
+        self.w = None
         self.b = 0
 
         # need to put check to the values of LR, epochs before assigning them
         self.alpha = learning_rate
         self.epochs = epochs
+        self.lambda_ = lambda_
     
     def _cost_function(self, X, y):
         """
@@ -39,7 +40,8 @@ class LinearRegression:
         y_hat = np.dot(X, self.w) + self.b
         error = y_hat - y
         sum_of_square_error = np.sum(error ** 2)
-        total_cost = sum_of_square_error/(2*m)
+        regularization_term = (self.lambda_ / (2 * m)) * np.sum(self.w ** 2)  # element wise square then add.
+        total_cost = sum_of_square_error/(2*m) + regularization_term
         return total_cost
     
     def _compute_gradient(self, X, y):
@@ -59,7 +61,8 @@ class LinearRegression:
 
         y_hat = np.dot(X, self.w) + self.b
         error =  y_hat - y
-        dw = (1/m) * np.sum(X.T * error)
+        dw = (1/m) * np.dot(X.T, error)
+        dw += (self.lambda_ /m ) * self.w
         db = (1/m) * np.sum(error)
 
         return dw, db
